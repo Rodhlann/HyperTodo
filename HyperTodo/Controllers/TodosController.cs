@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HyperTodo.Models;
 using static HyperTodo.Models.Todo;
+using System.Web.Http.Cors;
 
 namespace HyperTodo.Controllers
 {
@@ -39,24 +40,25 @@ namespace HyperTodo.Controllers
 
         public Todo[] todos = { todo1, todo2 };
 
-        // GET: api/Todo/5
-        [HttpGet("getAll/{userId}", Name = "Get")]
-        public IEnumerable<string> GetAllByUserId()
+        // GET: api/Todo/GetAllByUserId/5
+        [HttpGet("GetAllByUserId/{userId}")]
+        public Todo[] GetAllByUserId()
         {
-            return new string[] { "value1", "value2" };
+            return todos;
         }
 
-        // GET: api/Todo/5
-        [HttpGet("get/{id}", Name = "Get")]
-        public string GetById(int id)
+        // GET: api/Todo/getTodoById/5
+        [HttpGet("GetTodoById/{id}")]
+        public Todo GetTodoById(int id)
         {
-            return "value";
+            return todos.Where(todo => todo.Id == id).FirstOrDefault();
         }
 
         // PUT: api/Todo/todo
         [HttpPut("{todo}")]
         public void Create([FromBody]Todo todo)
         {
+            // Save new todo to DB
         }
 
         // PUT: api/Todo/5
