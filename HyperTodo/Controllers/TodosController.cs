@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using HyperTodo.Models;
 using static HyperTodo.Models.Todo;
 using System.Web.Http.Cors;
+using System.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace HyperTodo.Controllers
 {
@@ -42,9 +45,26 @@ namespace HyperTodo.Controllers
 
         // GET: api/Todo/GetAllByUserId/5
         [HttpGet("GetAllByUserId/{userId}")]
-        public Todo[] GetAllByUserId()
+        public List<Todo> GetAllByUserId(int userId)
         {
-            return todos;
+            // TODO: Move this logic to a repository class
+            List<Todo> sqlReturn = new List<Todo>();
+            string connectionString = "Data Source=STORMTROOPER;Initial Catalog=TodoAppDB;Integrated Security=True;Pooling=False";
+            string getAllTodosQuery = "select * from tbl_todos where UserId=" + userId;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand(getAllTodosQuery, conn))
+            {
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        sqlReturn.Add(new Todo { UserId = reader.GetInt32(1), Note = reader.GetString(3) });
+                    }
+                }
+                conn.Close();
+            }
+            return sqlReturn;
         }
 
         // GET: api/Todo/getTodoById/5
@@ -66,7 +86,7 @@ namespace HyperTodo.Controllers
         public void Update(int id, [FromBody]string value)
         {
         }
-        
+
         // DELETE: api/Todo/5
         [HttpDelete("{id}")]
         public void Delete(int id)
