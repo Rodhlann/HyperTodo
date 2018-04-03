@@ -11,7 +11,6 @@ namespace HyperTodo.Models
         HIGH
     };
 
-    [Table(name: "Todos")]
     public class Todo
     {
         public long Id { get; set; }

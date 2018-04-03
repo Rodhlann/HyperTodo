@@ -10,6 +10,7 @@ using System.Web.Http.Cors;
 using System.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using HyperTodo.Entities;
 
 namespace HyperTodo.Controllers
 {
@@ -17,80 +18,32 @@ namespace HyperTodo.Controllers
     [Route("api/Todo")]
     public class TodosController : Controller
     {
-        public static Todo todo1 = new Todo
-        {
-            Id = 0,
-            Note = "Note 1",
-            UserId = 1,
-            Urgency = Urgency.NONE,
-            Priority = 0,
-            DueDate = new DateTime(),
-            Category = "",
-            Finished = false
-        };
-
-        public static Todo todo2 = new Todo
-        {
-            Id = 1,
-            Note = "Note 2",
-            UserId = 1,
-            Urgency = Urgency.NONE,
-            Priority = 1,
-            DueDate = new DateTime(),
-            Category = "",
-            Finished = false
-        };
-
-        public Todo[] todos = { todo1, todo2 };
-
         // GET: api/Todo/GetAllByUserId/5
         [HttpGet("GetAllByUserId/{userId}")]
-        public List<Todo> GetAllByUserId(int userId)
+        public List<Todo> GetAllByUserId(long userId)
         {
-            // TODO: Move this logic to a repository class
-            List<Todo> sqlReturn = new List<Todo>();
-            string connectionString = "Data Source=STORMTROOPER;Initial Catalog=TodoAppDB;Integrated Security=True;Pooling=False";
-            string getAllTodosQuery = "select * from tbl_todos where UserId=" + userId;
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            using (SqlCommand cmd = new SqlCommand(getAllTodosQuery, conn))
-            {
-                conn.Open();
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        sqlReturn.Add(new Todo { UserId = reader.GetInt32(1), Note = reader.GetString(3) });
-                    }
-                }
-                conn.Close();
-            }
-            return sqlReturn;
+            return TodoRepo.GetAllTodosByUserId(userId);
         }
 
-        // GET: api/Todo/getTodoById/5
-        [HttpGet("GetTodoById/{id}")]
-        public Todo GetTodoById(int id)
+        // PUT: api/Todo/CreateTodo/{todo}
+        [HttpPut("CreateTodo/{todo}")]
+        public List<Todo> CreateTodo([FromBody]Todo todo)
         {
-            return todos.Where(todo => todo.Id == id).FirstOrDefault();
+            return TodoRepo.CreateTodo(todo);
         }
 
-        // PUT: api/Todo/todo
-        [HttpPut("{todo}")]
-        public void Create([FromBody]Todo todo)
+        // PUT: api/Todo/UpdateTodo/5
+        [HttpPut("UpdateTodo/{id}")]
+        public List<Todo> UpdateTodo(long todoId, [FromBody]Todo todo)
         {
-            // Save new todo to DB
+            return TodoRepo.UpdateTodo(todoId, todo);
         }
 
-        // PUT: api/Todo/5
-        [HttpPut("{id}")]
-        public void Update(int id, [FromBody]string value)
+        // DELETE: api/Todo/DeleteTodo/5
+        [HttpDelete("DeleteTodo/{id}")]
+        public List<Todo> DeleteTodoById(int todoId)
         {
-        }
-
-        // DELETE: api/Todo/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return TodoRepo.DeleteTodoById(todoId);
         }
     }
 }
