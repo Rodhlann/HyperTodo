@@ -25,23 +25,23 @@ namespace HyperTodo.Controllers
             return TodoRepo.GetAllTodosByUserId(userId);
         }
 
-        // PUT: api/Todo/CreateTodo/{todo}
-        [HttpPut("CreateTodo/{todo}")]
+        // PUT: api/Todo/CreateTodo (body -> raw -> {"UserId": "0", "Note": "New Todo 5" })
+        [HttpPut("CreateTodo")]
         public List<Todo> CreateTodo([FromBody]Todo todo)
         {
             return TodoRepo.CreateTodo(todo);
         }
 
-        // PUT: api/Todo/UpdateTodo/5
-        [HttpPut("UpdateTodo/{id}")]
-        public List<Todo> UpdateTodo(long todoId, [FromBody]Todo todo)
+        // PUT: api/Todo/UpdateTodo (body -> raw -> {"Id": "5", "UserId": "0", "Note": "New Todo 5" })
+        [HttpPut("UpdateTodo")]
+        public List<Todo> UpdateTodo([FromBody]Todo todo)
         {
-            return TodoRepo.UpdateTodo(todoId, todo);
+            return TodoRepo.UpdateTodo(todo.Id, todo);
         }
 
-        // DELETE: api/Todo/DeleteTodo/5
-        [HttpDelete("DeleteTodo/{id}")]
-        public List<Todo> DeleteTodoById(int todoId)
+        // DELETE: api/Todo/DeleteTodo (body -> x-www-form-urlencoded -> todo: 1)
+        [HttpDelete("DeleteTodo")]
+        public List<Todo> DeleteTodoById(long todoId)
         {
             return TodoRepo.DeleteTodoById(todoId);
         }

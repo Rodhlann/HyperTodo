@@ -25,7 +25,14 @@ namespace HyperTodo.Entities
                     {
                         while (reader.Read())
                         {
-                            sqlReturn.Add(new Todo { UserId = reader.GetInt32(1), Note = reader.GetString(3) });
+                            int IdOrdinal = reader.GetOrdinal("Id");
+                            int UserIdOrdinal = reader.GetOrdinal("UserId");
+                            int NoteOrdinal = reader.GetOrdinal("Note");
+                            sqlReturn.Add(new Todo {
+                                Id = reader.GetInt32(IdOrdinal),
+                                UserId = reader.GetInt32(UserIdOrdinal),
+                                Note = reader.GetString(NoteOrdinal)
+                            });
                         }
                     }
                     catch (Exception exception)
@@ -52,7 +59,15 @@ namespace HyperTodo.Entities
                     {
                         while (reader.Read())
                         {
-                            todo = new Todo { UserId = reader.GetInt32(1), Note = reader.GetString(3) };
+                            int IdOrdinal = reader.GetOrdinal("Id");
+                            int UserIdOrdinal = reader.GetOrdinal("UserId");
+                            int NoteOrdinal = reader.GetOrdinal("Note");
+                            todo = new Todo
+                            {
+                                Id = reader.GetInt32(IdOrdinal),
+                                UserId = reader.GetInt32(UserIdOrdinal),
+                                Note = reader.GetString(NoteOrdinal)
+                            };
                         }
                     }
                     catch (Exception exception)
@@ -67,9 +82,9 @@ namespace HyperTodo.Entities
 
         public static List<Todo> CreateTodo(Todo todo)
         {
-            string query = 
+            string query = // TODO: Update query to support null current null entries (Category/DueDate)
                 "insert into tbl_todos (UserId, DueDate, Note, Category, Finished, Priority, Urgency) " +
-                "values ({todo.UserId}, {todo.DueDate}, {todo.Note}, {todo.Category}, {todo.Finished}, {todo.Priority}, {todo.Urgency})";
+                "values (" + todo.UserId + ", null, '" + todo.Note + "', null, " + Convert.ToInt32(todo.Finished) + ", " + todo.Priority + ", " + Convert.ToInt32(todo.Urgency) + ")";
             using (SqlConnection conn = new SqlConnection(connectionString))
             using (SqlCommand cmd = new SqlCommand(query, conn))
             {
@@ -90,10 +105,9 @@ namespace HyperTodo.Entities
         public static List<Todo> UpdateTodo(long todoId, Todo todo)
         {
             long UserId = todo.UserId;
-            string query = 
-                "update tbl_todos set DueDate = " +
-                "{todo.DueDate}, Note = {todo.Note}, Category = {todo.Category}, Finished = {todo.Finished}, Priority = {todo.Priority}, Urgency = {todo.Urgency}" +
-                "where ID=" + todoId;
+            string query = // TODO: Update query to support null current null entries (Category/DueDate)
+                "update tbl_todos set Note = '" + todo.Note + "', Finished = " + Convert.ToInt32(todo.Finished) + ", Priority = " + todo.Priority + ", Urgency = " + Convert.ToInt32(todo.Urgency) +
+                " where Id=" + todoId;
             using (SqlConnection conn = new SqlConnection(connectionString))
             using (SqlCommand cmd = new SqlCommand(query, conn))
             {
