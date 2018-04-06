@@ -34,7 +34,7 @@ namespace HyperTodo.Controllers
 
         // PUT: api/Todo/UpdateTodo (body -> raw -> {"Id": "5", "UserId": "0", "Note": "New Todo 5" })
         [HttpPut("UpdateTodo")]
-        public List<Todo> UpdateTodo([FromBody]Todo todo)
+        public Todo UpdateTodo([FromBody]Todo todo)
         {
             return TodoRepo.UpdateTodo(todo.Id, todo);
         }

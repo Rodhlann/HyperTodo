@@ -102,7 +102,7 @@ namespace HyperTodo.Entities
             return GetAllTodosByUserId(todo.UserId);
         }
 
-        public static List<Todo> UpdateTodo(long todoId, Todo todo)
+        public static Todo UpdateTodo(long todoId, Todo todo)
         {
             long UserId = todo.UserId;
             string query = // TODO: Update query to support null current null entries (Category/DueDate)
@@ -122,7 +122,7 @@ namespace HyperTodo.Entities
                 }
                 conn.Close();
             }
-            return GetAllTodosByUserId(UserId);
+            return GetTodoById(todoId);
         }
 
         public static List<Todo> DeleteTodoById(long todoId)
