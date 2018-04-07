@@ -39,8 +39,8 @@ namespace HyperTodo.Controllers
             return TodoRepo.UpdateTodo(todo.Id, todo);
         }
 
-        // DELETE: api/Todo/DeleteTodo (body -> x-www-form-urlencoded -> todo: 1)
-        [HttpDelete("DeleteTodo")]
+        // DELETE: api/Todo/DeleteTodoById (body -> x-www-form-urlencoded -> todo: 1)
+        [HttpDelete("DeleteTodoById/{todoId}")]
         public List<Todo> DeleteTodoById(long todoId)
         {
             return TodoRepo.DeleteTodoById(todoId);

@@ -11,6 +11,21 @@ namespace HyperTodo.Entities
     {
         private static string connectionString = "Data Source=STORMTROOPER;Initial Catalog=TodoAppDB;Integrated Security=True;Pooling=False";
 
+        private static Todo ReadSqlReturn(SqlDataReader reader)
+        {
+            int IdOrdinal = reader.GetOrdinal("Id");
+            int UserIdOrdinal = reader.GetOrdinal("UserId");
+            int NoteOrdinal = reader.GetOrdinal("Note");
+            int FinishedOrdinal = reader.GetOrdinal("Finished");
+            return new Todo
+            {
+                Id = reader.GetInt32(IdOrdinal),
+                UserId = reader.GetInt32(UserIdOrdinal),
+                Note = reader.GetString(NoteOrdinal),
+                Finished = reader.GetBoolean(FinishedOrdinal)
+            };
+        }
+
         public static List<Todo> GetAllTodosByUserId(long userId)
         {
             List<Todo> sqlReturn = new List<Todo>();
@@ -25,14 +40,7 @@ namespace HyperTodo.Entities
                     {
                         while (reader.Read())
                         {
-                            int IdOrdinal = reader.GetOrdinal("Id");
-                            int UserIdOrdinal = reader.GetOrdinal("UserId");
-                            int NoteOrdinal = reader.GetOrdinal("Note");
-                            sqlReturn.Add(new Todo {
-                                Id = reader.GetInt32(IdOrdinal),
-                                UserId = reader.GetInt32(UserIdOrdinal),
-                                Note = reader.GetString(NoteOrdinal)
-                            });
+                            sqlReturn.Add(ReadSqlReturn(reader));
                         }
                     }
                     catch (Exception exception)
@@ -59,15 +67,7 @@ namespace HyperTodo.Entities
                     {
                         while (reader.Read())
                         {
-                            int IdOrdinal = reader.GetOrdinal("Id");
-                            int UserIdOrdinal = reader.GetOrdinal("UserId");
-                            int NoteOrdinal = reader.GetOrdinal("Note");
-                            todo = new Todo
-                            {
-                                Id = reader.GetInt32(IdOrdinal),
-                                UserId = reader.GetInt32(UserIdOrdinal),
-                                Note = reader.GetString(NoteOrdinal)
-                            };
+                            todo = ReadSqlReturn(reader);
                         }
                     }
                     catch (Exception exception)
